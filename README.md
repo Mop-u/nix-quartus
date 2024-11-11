@@ -1,23 +1,33 @@
 # nix-quartus
-Nix Expressions for Altera(Intel) Quartus.
+Nix Flake for Altera(Intel) Quartus.
 
 These expressions are based on the expressions for Quartus found in Bjørn
 Forsman's [nixos-config repository](https://github.com/bjornfor/nixos-config)
 
-These packages use a (hopefully) recent pinned Nixpkgs rev, as specified in
-`pinned-nixpkgs.nix`. They've been tested on x86_64 Linux.
+This has only been tested on x86_64 Linux.
 
 ## Building
 
-Simply import the top-level expression for the desired Quartus version. For
-example, to build the Lite Edition of Quartus Prime 18:
+Add this repo as an input to your flake
 
-```
-$ nix-build -E "(import ./lite18.nix)"
+`flake.nix`
+```nix
+inputs = {
+    # ...
+    quartus.url = "github:Mop-u/nix-quartus";
+    # ...
+};
 ```
 
-To install the same version:
+Then add the package as normal for the desired Quartus version. For
+example, to install the Lite Edition of Quartus Prime 18:
 
-```
-$ nix-env -i -E "_: import ./lite18.nix"
+`configuration.nix`
+
+```nix
+environment.systemPackages = [
+    # ...
+    inputs.quartus.packages.${pkgs.system}.quartus-prime-lite-18
+    # ...
+];
 ```

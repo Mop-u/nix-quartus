@@ -1,18 +1,10 @@
-{ stdenv, fetchurl, utillinux, file, bash, glibc, pkgsi686Linux, writeScript
-, nukeReferences, glibcLocales, libfaketime, coreutils, gnugrep, gnused, proot
-# Runtime dependencies
-, zlib, glib, libpng12, freetype, libSM, libICE, libXrender, fontconfig
-, libXext, libX11, libXtst, gtk2, bzip2, libelf, libXi
-}:
+{ pkgs }:
 
 { baseName
 , prettyName ? baseName
 , version
 , components ? []
 , updateComponents ? []
-
-# Set to true for the old installers that are 32-bit only
-, is32bitPackage ? false
 
 # There are .so files inside .jar files bundled with Quartus that lack RPATH
 # directives. This breaks starting e.g. eclipse-nios2:
@@ -31,14 +23,14 @@
 , wrapWithLdLibraryPath ? true
 }:
 
-let
-  # Somewhere between NixOS 16.09 and 17.03 (for instance, commit 9e6eec201b)
-  # the glibc attribute lacked $out/lib{,64}. The glibc_lib attribute below
-  # helped when bisecting build issues between 16.03 and 17.03.
-  glibc_lib =
-    if glibc ? out then glibc.out else glibc;
-  glibc_lib32 =
-    if pkgsi686Linux.glibc ? out then pkgsi686Linux.glibc.out else pkgsi686Linux.glibc;
+with pkgs; let
+  # Grab old nixpkgs for properly evaluating the glibc 2.24 derivation
+  oldPkgs = import (fetchFromGitHub {
+    owner = "nixos";
+    repo = "nixpkgs-channels";
+    rev = "95fed28ac372c61eb83c87ad97c24b0f957827bf";
+    sha256 = "03jdb28khdm45gzwl7wvcb7h10yb6y45s7ds8bhlfk9a8phzj4hx";
+  }) { system = "x86_64-linux"; };
 
   # Using glibc>=2.25 causes the Quartus*Setup*run installer to hang.
   # Use 2.24 instead.
@@ -52,38 +44,18 @@ let
   };
 
   # Backport upstream patch to fix build against nixpkgs-18.09.
-  glibc_lib_for_installer = glibc_lib.overrideAttrs (oldAttrs:
-    commonGlibcAttrs224 // { patches = [ ./patches/glibc/0001-Avoid-.symver-on-common-symbols-BZ-21666.patch ];  }
-  );
-  glibc_lib32_for_installer = glibc_lib32.overrideAttrs (oldAttrs:
+  glibc_lib_for_installer = oldPkgs.glibc.overrideAttrs (oldAttrs:
     commonGlibcAttrs224 // { patches = [ ./patches/glibc/0001-Avoid-.symver-on-common-symbols-BZ-21666.patch ];  }
   );
 
-  # Keep in sync with runtimeLibPath64
-  # (with pkgsi686Linux; [ .. ] doesn't bind strongly enough.)
-  runtimeLibPath32 =
-    stdenv.lib.makeLibraryPath
-      [ pkgsi686Linux.zlib pkgsi686Linux.glib pkgsi686Linux.libpng12
-        pkgsi686Linux.freetype pkgsi686Linux.xorg.libSM pkgsi686Linux.xorg.libICE
-        pkgsi686Linux.xorg.libXrender pkgsi686Linux.fontconfig.lib
-        pkgsi686Linux.xorg.libXext pkgsi686Linux.xorg.libX11 pkgsi686Linux.xorg.libXtst
-        pkgsi686Linux.gtk2 pkgsi686Linux.bzip2.out pkgsi686Linux.libelf
-        pkgsi686Linux.xorg.libXi
-        pkgsi686Linux.stdenv.cc.cc.lib
-      ];
-
-  # Keep in sync with runtimeLibPath32
-  runtimeLibPath64 =
-    stdenv.lib.makeLibraryPath
+  runtimeLibPath = with xorg;
+    lib.makeLibraryPath
     [ zlib glib libpng12 freetype libSM libICE libXrender fontconfig.lib
       libXext libX11 libXtst gtk2 bzip2.out libelf libXi
       stdenv.cc.cc.lib
     ];
 
-  runtimeLibPath =
-    if is32bitPackage then runtimeLibPath32 else runtimeLibPath64;
-
-  runtimeBinPath = stdenv.lib.makeBinPath
+  runtimeBinPath = lib.makeBinPath
     [ coreutils gnugrep gnused glibc proot ];
 
   setup-chroot-and-exec = writeScript "setup-chroot-and-exec"
@@ -103,11 +75,7 @@ let
       ${utillinux}/bin/mount --rbind /nix  "$chrootdir"/nix
       ${utillinux}/bin/mount --rbind /tmp  "$chrootdir"/tmp
       ${utillinux}/bin/mount --rbind /dev  "$chrootdir"/dev
-    '' + (if is32bitPackage then ''
-      ${utillinux}/bin/mount --rbind "${glibc_lib32_for_installer}"/lib "$chrootdir"/lib
-    '' else ''
       ${utillinux}/bin/mount --rbind "${glibc_lib_for_installer}"/lib64 "$chrootdir"/lib64
-    '') + ''
       ${utillinux}/bin/mount --rbind "${bash}"/bin "$chrootdir"/bin
       chroot "$chrootdir" "$@"
     '');
@@ -142,7 +110,7 @@ let
           set -x
 
           mkdir -p "$out"
-          ${stdenv.lib.concatStringsSep "\n"
+          ${lib.concatStringsSep "\n"
             (map
               (p: ''
                 cp "${p}" "$out/$(stripHash "${p}")"
@@ -216,7 +184,7 @@ let
               echo "ERROR: \"$installer\" either doesn't exist or is not executable"
               exit 1
           fi
-          maybe_accept_eula="${if stdenv.lib.versionAtLeast version "17.1" then "--accept_eula 1" else ""}"
+          maybe_accept_eula="${if lib.versionAtLeast version "17.1" then "--accept_eula 1" else ""}"
           echo "### ${run-in-fhs-env} $installer --mode unattended --installdir $out" $maybe_accept_eula
           "${run-in-fhs-env}" "$installer" --mode unattended --installdir "$out" $maybe_accept_eula
           echo "...done"
@@ -225,7 +193,7 @@ let
       echo "Running Quartus Setup (in FHS sandbox)..."
       run_quartus_installer "$(echo "${componentInstallers}"/Quartus*Setup*)"
 
-      ${stdenv.lib.optionalString (updateComponents != []) ''
+      ${lib.optionalString (updateComponents != []) ''
         echo "Running Quartus Update (in FHS sandbox)..."
         run_quartus_installer "$(echo "${updateComponentInstallers}"/Quartus*Setup*)"
       ''}
@@ -267,7 +235,7 @@ let
                                   new_interp=$(cat "$NIX_CC"/nix-support/dynamic-linker)
                                   ;;
                               /lib/ld-linux.so.2|/lib/ld-lsb.so.3)
-                                  new_interp="${glibc_lib32}/lib/ld-linux.so.2"
+                                  new_interp="${pkgsi686Linux.glibc}/lib/ld-linux.so.2"
                                   ;;
                               /lib/ld-linux-armhf.so.3|/lib64/ld64.so.1|/lib64/ld64.so.2)
                                   # Ignore ARM/ppc64/ppc64le executables, they
@@ -280,7 +248,7 @@ let
                                   ;;
                               /usr/lib/ld.so.1)
                                   echo "Unclear if this will work?"
-                                  new_interp="${glibc_lib32}/lib/ld-linux.so.2"
+                                  new_interp="${pkgsi686Linux.glibc}/lib/ld-linux.so.2"
                                   ;;
                               *)
                                   echo "FIXME: unhandled interpreter \"$interp\" in $f"
@@ -345,7 +313,7 @@ stdenv.mkDerivation rec {
     # write to __pycache__ in the (read-only) nix store.
     export PYTHONDONTWRITEBYTECODE=1
 
-    ${stdenv.lib.optionalString wrapWithLdLibraryPath ''
+    ${lib.optionalString wrapWithLdLibraryPath ''
       if [ "x\$LD_LIBRARY_PATH" != x ]; then
           export LD_LIBRARY_PATH="${runtimeLibPath}:\$LD_LIBRARY_PATH"
       else
@@ -383,9 +351,6 @@ stdenv.mkDerivation rec {
             export LD_LIBRARY_PATH="${libfaketime}/lib:\$LD_LIBRARY_PATH"
         else
             export LD_LIBRARY_PATH="${libfaketime}/lib"
-        fi
-        if [ "x${toString is32bitPackage}" = "x${toString true}" ]; then
-            export LD_LIBRARY_PATH="${pkgsi686Linux.libfaketime}/lib:\$LD_LIBRARY_PATH"
         fi
         if [ "x\$LD_PRELOAD" != x ]; then
             export LD_PRELOAD="libfaketime.so.1:\$LD_PRELOAD"
@@ -444,9 +409,9 @@ stdenv.mkDerivation rec {
     EOF
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Development tools for Altera FPGA, CPLD and SoC designs";
-    homepage = https://www.altera.com/;
+    homepage = "https://www.altera.com/";
     license = licenses.unfree;
     platforms = [ "x86_64-linux" ];
     maintainers = [ maintainers.bjornfor ];

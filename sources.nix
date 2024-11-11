@@ -46,141 +46,17 @@ let requireQuartus =
              nix-store --add-fixed sha256 ${name}
          '';
        };
-in rec {
-
-  v13 = rec {
-    recurseForDerivations = true;
-    version = "13.0.1.232";
-    is32bitPackage = true;
-    baseUrl = "http://download.altera.com/akdlm/software/acdsinst/13.1/162/ib_installers";
-
-    web_edition = {
-      recurseForDerivations = true;
-      baseName = "altera-quartus-ii-web";
-      prettyName = "Quartus II Web Edition";
-      # inherit version is32bitPackage updates;
-      inherit version is32bitPackage;
-      components = {
-        recurseForDerivations = true;
-        quartus = requireQuartus
-        {
-            name = "QuartusSetupWeb-${version}.run";
-            sha256 = "7dd7305cec54949cdef85ae12c7a30a752a68136175a32ed853842c3a31636bc";
-        };
-        modelsim = requireQuartus {
-          name = "ModelSimSetup-${version}.run";
-          sha256 = "17b1f293e16f1940586c5130f6323fe35576414f7f090590afc11f488572d5b5";
-        };
-        arria = requireQuartus {
-          name = "arria_web-${version}.qdz";
-          sha256 = "201c6772c53701f4d13d15e21f406c4ca839ef3aa1133409efe611d6e9109251";
-        };
-        cyclone = requireQuartus {
-          name = "cyclone_web-${version}.qdz";
-          sha256 = "c91e31e148f30c37487c55ef8089764aef532f268fe54ec6682767c46b35ac24";
-        };
-        cyclonev = requireQuartus {
-          name = "cyclonev-${version}.qdz";
-          sha256 = "0fa3b75b6eda1bb28f89559f8169a261b7d0b19503fbfe5b59ea6befa0c24969";
-        };
-        max = requireQuartus {
-          url = "max_web-${version}.qdz";
-          sha256 = "0c479700766456773f0ed483966441ccfc633046bccf1dd473bef61b9528ea21";
-        };
-      };
-    };
-
-    #subscription_edition = {
-    #  recurseForDerivations = true;
-    #  baseName = "altera-quartus-ii-subscription";
-    #  prettyName = "Quartus II Subscription Edition";
-    #  inherit version is32bitPackage updates;
-    #  components = {
-    #    recurseForDerivations = true;
-    #    quartus = fetchurl {
-    #      # Size: 1.8 GB MD5: 7FEFAA7DBA6BC42801D043AFCCC97AE5
-    #      url = "${baseUrl}/QuartusSetup-${version}.run";
-    #      sha256 = "000iwm44k77jf44skbl49fi3f0miqy33rshpp1sc9cl68cwfb9wg";
-    #    };
-    #    modelsim = fetchurl {
-    #      # Size: 817.7 MB MD5: 45FEA341405603F5CF5CD1249BF90976
-    #      url = "${baseUrl}/ModelSimSetup-${version}.run";
-    #      sha256 = "0hy8s1238dbfgyypm416a0bc2hsqhqqy9vacq0lzqcnscfm87n3v";
-    #    };
-    #    arria = fetchurl {
-    #      # Size: 595.6 MB MD5: 675B2B6BDCD7C892A59F84D8B4A5B6AF
-    #      url = "${baseUrl}/arria-${version}.qdz";
-    #      sha256 = "1d29nwlvq8ia0sby73i6fqdcw7i3mzl4l018c9fk6h6wrhmnqxsm";
-    #    };
-    #    arriav = fetchurl {
-    #      # Size: 1.2 GB MD5: 5CA879C0AD3E8E4933700153907D490F
-    #      url = "${baseUrl}/arriav-${version}.qdz";
-    #      sha256 = "1x15an3dn38sl84cwksfjv83wcppbpjwjmrczgzc6kd76f3kx62c";
-    #    };
-    #    arriavgz = fetchurl {
-    #      # Size: 1.4 GB MD5: C0B21B60D53BB8B6C8161A7B38005D0F
-    #      url = "${baseUrl}/arriavgz-${version}.qdz";
-    #      sha256 = "1xxsva6dkfha7j79ssnrbd6awl7gimmjqpcv7xlbigxhjyq9i4jx";
-    #    };
-    #    cyclone = fetchurl {
-    #      # Size: 548.4 MB MD5: 2252CD4E2CBA75018F9B1325929F69EF
-    #      url = "${baseUrl}/cyclone-${version}.qdz";
-    #      sha256 = "1him8ra0m26y58zis9l8fz1cmx4lylfsqy410d2w4jrmgdsirnd4";
-    #    };
-    #    cyclonev = fetchurl {
-    #      # Size: 810.4 MB MD5: 075BC842C2379B8D9B2CC74F9CAEDCB7
-    #      url = "${baseUrl}/cyclonev-${version}.qdz";
-    #      sha256 = "0ar8nfcn6d4lziixw16slnmic0dr3vmmz0l81kpj6accrdyyv70v";
-    #    };
-    #    max = fetchurl {
-    #      # Size: 6.1 MB MD5: 253524637B52DA417107249344B7DF80
-    #      url = "${baseUrl}/max-${version}.qdz";
-    #      sha256 = "1v5rsy10jzpzn31qgzqsc2683iylvh4y902mxiimmzks21qwnb3j";
-    #    };
-    #    stratixiv = fetchurl {
-    #      # Size: 633.7 MB MD5: 43AC8DF41B1A19087858A16716A39B96
-    #      url = "${baseUrl}/stratixiv-${version}.qdz";
-    #      sha256 = "1ckn8321zh3c2d7m6s6agsmjhp1p9fv68rw8rzapk65glavcjlzi";
-    #    };
-    #    stratixv = fetchurl {
-    #      # Size: 1.9 GB MD5: B3975A8190C4C47C5C1C51528D949531
-    #      url = "${baseUrl}/stratixv-${version}.qdz";
-    #      sha256 = "1g4fr2n0113nx8rhg8pbvy4ahdxcdfllyymskvqcrbkizlc1f75y";
-    #    };
-    #  };
-    #};
-
-    ## Updates are shared between editions. I.e. this update can be applied to
-    ## either web or subscription editions.
-    #updates = rec {
-    #  recurseForDerivations = true;
-    #  version = "13.1.4.182";
-    #  updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/13.1.4/182/update";
-    #  components = {
-    #    recurseForDerivations = true;
-    #    quartus = fetchurl {
-    #      # Size: 1.1 GB MD5: 172C8CD0EB631B988516F1182054F976
-    #      url = "${updateBaseUrl}/QuartusSetup-${version}.run";
-    #      sha256 = "0rs8dzr39nqzlvb6lizm803vyp5iqfx4axavrfd05d55ka1vbjnr";
-    #    };
-    #  };
-    #};
-
-  };
+in {
 
   v14 = rec {
-    recurseForDerivations = true;
     version = "14.1.0.186";
-    is32bitPackage = false;
     baseUrl = "http://download.altera.com/akdlm/software/acdsinst/14.1/186/ib_installers";
 
     web_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-ii-web";
       prettyName = "Quartus II Web Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 1.5 GB MD5: A9237345C5725418A72363CDFF2556A7
           url = "${baseUrl}/QuartusSetupWeb-${version}-linux.run";
@@ -220,12 +96,10 @@ in rec {
     };
 
     subscription_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-ii-subscription";
       prettyName = "Quartus II Subscription Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.2 GB MD5: 5A4696ED4AC2970897DC29714A7ECF5A
           url = "${baseUrl}/QuartusSetup-${version}-linux.run";
@@ -292,11 +166,9 @@ in rec {
     # Updates are shared between editions. I.e. this update can be applied to
     # either web or subscription editions.
     updates = rec {
-      recurseForDerivations = true;
       version = "14.1.1.190";
       updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/14.1.1/190/update";
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 1.2 GB MD5: AA1623894DE38069635913DA2DE33167
           url = "${updateBaseUrl}/QuartusSetup-${version}-linux.run";
@@ -308,18 +180,14 @@ in rec {
   };
 
   v15 = rec {
-    recurseForDerivations = true;
     version = "15.1.0.185";
-    is32bitPackage = false;
     baseUrl = "http://download.altera.com/akdlm/software/acdsinst/15.1/185/ib_installers";
 
     lite_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 1.7 GB MD5: CC8BFDE25F57C2F05D1753882BC9607A
           url = "${baseUrl}/QuartusLiteSetup-${version}-linux.run";
@@ -359,12 +227,10 @@ in rec {
     };
 
     standard_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-prime-standard";
       prettyName = "Quartus Prime Standard Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.4 GB MD5: EC505B3C9CDB377D0211D3EF0962FBB5
           url = "${baseUrl}/QuartusSetup-${version}-linux.run";
@@ -441,11 +307,9 @@ in rec {
     # Updates are shared between editions. I.e. this update can be applied to
     # either lite or standard editions.
     updates = rec {
-      recurseForDerivations = true;
       version = "15.1.2.193";
       updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/15.1.2/193/update";
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 4.1 GB MD5: EECCEF76A26E98E8022C59C7491FC215
           url = "${updateBaseUrl}/QuartusSetup-${version}-linux.run";
@@ -457,18 +321,14 @@ in rec {
   };
 
   v16 = rec {
-    recurseForDerivations = true;
     version = "16.1.0.196";
-    is32bitPackage = false;
     baseUrl = "http://download.altera.com/akdlm/software/acdsinst/16.1/196/ib_installers";
 
     lite_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.0 GB MD5: 0FFD781FCC23C6FABC6A68019B3CAB62
           url = "${baseUrl}/QuartusLiteSetup-${version}-linux.run";
@@ -508,12 +368,10 @@ in rec {
     };
 
     standard_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-prime-standard";
       prettyName = "Quartus Prime Standard Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.7 GB MD5: D8A1730C18F2D79EB080786FFFE2E203
           url = "${baseUrl}/QuartusSetup-${version}-linux.run";
@@ -590,11 +448,9 @@ in rec {
     # Updates are shared between editions. I.e. this update can be applied to
     # either lite or standard editions.
     updates = rec {
-      recurseForDerivations = true;
       version = "16.1.2.203";
       updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/16.1.2/203/update";
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.4 GB MD5: 607E5CBFF6B674034413E675655DDA32
           url = "${updateBaseUrl}/QuartusSetup-${version}-linux.run";
@@ -606,18 +462,14 @@ in rec {
   };
 
   v17 = rec {
-    recurseForDerivations = true;
     version = "17.1.0.590";
-    is32bitPackage = false;
     baseUrl = "http://download.altera.com/akdlm/software/acdsinst/17.1std/590/ib_installers";
 
     lite_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.0 GB MD5: 8A22E65F15B695E7967A292CAA7275F3
           url = "${baseUrl}/QuartusLiteSetup-${version}-linux.run";
@@ -662,12 +514,10 @@ in rec {
     };
 
     standard_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-prime-standard";
       prettyName = "Quartus Prime Standard Edition";
-      inherit version is32bitPackage updates;
+      inherit version updates;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.7 GB MD5: 6526114644039D5011AD1FA3960941D1
           url = "${baseUrl}/QuartusSetup-${version}-linux.run";
@@ -749,11 +599,9 @@ in rec {
     # Updates are shared between editions. I.e. this update can be applied to
     # either lite or standard editions.
     updates = rec {
-      recurseForDerivations = true;
       version = "17.1.1.593";
       updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/17.1std.1/593/update";
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 1.9 GB MD5: 70E8016EA12CF7835DFCD3B22B1E3153
           url = "${updateBaseUrl}/QuartusSetup-${version}-linux.run";
@@ -764,19 +612,15 @@ in rec {
   };
 
   v18 = rec {
-    recurseForDerivations = true;
     version = "18.1.0.625";
-    is32bitPackage = false;
     baseUrl = "http://download.altera.com/akdlm/software/acdsinst/18.1std/625/ib_installers";
 
     lite_edition = {
-      recurseForDerivations = true;
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
       #inherit version is32bitpackage updates;
-      inherit version is32bitPackage;
+      inherit version;
       components = {
-        recurseForDerivations = true;
         quartus = fetchurl {
           # Size: 2.0 GB MD5: 8A22E65F15B695E7967A292CAA7275F3
           url = "${baseUrl}/QuartusLiteSetup-${version}-linux.run";
@@ -819,108 +663,8 @@ in rec {
         #};
       };
     };
-
-    #standard_edition = {
-    #  recurseForDerivations = true;
-    #  baseName = "altera-quartus-prime-standard";
-    #  prettyName = "Quartus Prime Standard Edition";
-    #  inherit version is32bitPackage updates;
-    #  components = {
-    #    recurseForDerivations = true;
-    #    quartus = fetchurl {
-    #      # Size: 2.7 GB MD5: 6526114644039D5011AD1FA3960941D1
-    #      url = "${baseUrl}/QuartusSetup-${version}-linux.run";
-    #      sha256 = "0kdlkqqi39l1frlf92amafqxfiyhmyljxi2d1wbgmacnr4msh19g";
-    #    };
-    #    modelsim = fetchurl {
-    #      # Size: 1.1 GB MD5: 47E17B9DCCE592AD248991660B0B3CD8
-    #      url = "${baseUrl}/ModelSimSetup-${version}-linux.run";
-    #      sha256 = "1ilgyyjm3n9h1sybip7ng764g6y7alp32kvxkrjispbm7098xzv6";
-    #    };
-    #    arria = fetchurl {
-    #      # Size: 669.7 MB MD5: 8B3BC0110C9485DDA2EE1B34A74D7B50
-    #      url = "${baseUrl}/arria-${version}.qdz";
-    #      sha256 = "1kmapmgip25jvzkg633zv8x6knbbcr8d512i3lnixn5f12zls4h6";
-    #    };
-    #    arria10_part1 = fetchurl {
-    #      # Size: 3.2 GB MD5: 9543781AE7538DCCB71142625934EB9A
-    #      url = "${baseUrl}/arria10_part1-${version}.qdz";
-    #      sha256 = "11g8ifnas7vbl0kbbk6vzf6wb80kyi37d7w33y3lrwcv5p5g4igg";
-    #    };
-    #    arria10_part2 = fetchurl {
-    #      # Size: 3.6 GB MD5: F80A0EA351CBCF105E74EAC6893B0F56
-    #      url = "${baseUrl}/arria10_part2-${version}.qdz";
-    #      sha256 = "1crglrnlr5ygd825vzjcav4b1difyzi0lys5ffxzqqa0pkr9vbm0";
-    #    };
-    #    arria10_part3 = fetchurl {
-    #      # Size: 4.8 GB MD5: 7B0F872DA6E3F48DCCBD171A588A7546
-    #      url = "${baseUrl}/arria10_part3-${version}.qdz";
-    #      sha256 = "1x43khxxmlvql450m4l4d3c853g0n0zrhwq7ixykyk9z7alkj65q";
-    #    };
-    #    arriav = fetchurl {
-    #      # Size: 1.3 GB MD5: 577D4E4F470930AB8054C1AC88F24FB7
-    #      url = "${baseUrl}/arriav-${version}.qdz";
-    #      sha256 = "16fk0k26dqsxn7gwwb1f9fr96h1nj2yy48bhrwji7kb9bmwydys7";
-    #    };
-    #    arriavgz = fetchurl {
-    #      # Size: 2.0 GB MD5: 62DA0E43F4F6147646901611CE7CA043
-    #      url = "${baseUrl}/arriavgz-${version}.qdz";
-    #      sha256 = "02r5r66m6kj3zriyvshrd02mp4njpa1jack6bh4zdbr936wriiw3";
-    #    };
-    #    cyclone = fetchurl {
-    #      # Size: 466.6 MB MD5: 09D346E4AE7AC403DF4F36563E6B7BFB
-    #      url = "${baseUrl}/cyclone-${version}.qdz";
-    #      sha256 = "03jk7gsvqi93vyqay12l5vq7sg5ifd5yhycmk2irj0xshpg3x277";
-    #    };
-    #    cyclone10lp = fetchurl {
-    #      # Size: 266.1 MB MD5: C9D4AC6A692BE4C3EAC15473325218BB
-    #      url = "${baseUrl}/cyclone10lp-${version}.qdz";
-    #      sha256 = "0vj5wxplpkhz4bmc0r2dbghnifznw6rm1jqjxqf6bmj23ap6qahq";
-    #    };
-    #    cyclonev = fetchurl {
-    #      # Size: 1.1 GB MD5: 747202966905F7917FB3B8F95228E026
-    #      url = "${baseUrl}/cyclonev-${version}.qdz";
-    #      sha256 = "0zmd3mkpz3cpclbasjjn8rrcffhsn2f00mw00jya3x259hrvvpcr";
-    #    };
-    #    max = fetchurl {
-    #      # Size: 11.4 MB MD5: 77B086D125489CD74D05FD9ED1AA4883
-    #      url = "${baseUrl}/max-${version}.qdz";
-    #      sha256 = "12h6sgqqdjf929mmdis5wad85c5bjmnwlp8xqjxl3hhzd15x1xcd";
-    #    };
-    #    max10 = fetchurl {
-    #      # Size: 325.2 MB MD5: 9B55655054A7EA1409160F27592F2358
-    #      url = "${baseUrl}/max10-${version}.qdz";
-    #      sha256 = "0xwvy7ja637qh7dbf64pxrhqhyr15ws9wdir1zfxwahdw0n1ril5";
-    #    };
-    #    stratixiv = fetchurl {
-    #      # Size: 544.5 MB MD5: 9A8BA92290A4ABD5F658AF0ED6B314AA
-    #      url = "${baseUrl}/stratixiv-${version}.qdz";
-    #      sha256 = "08pf4aa068h1m1fhg8bjbkh3sxw8rhgr5h7gwlzjjh2p8dgqr41q";
-    #    };
-    #    stratixv = fetchurl {
-    #      # Size: 2.9 GB MD5: 7A20672F48961BD91F20F23574FD7461
-    #      url = "${baseUrl}/stratixv-${version}.qdz";
-    #      sha256 = "0w115lsb3h2xlibg2c2qcw2rwigarv6569gn19xp3krk2h0i03p9";
-    #    };
-    #  };
-    #};
-
-    # Updates are shared between editions. I.e. this update can be applied to
-    # either lite or standard editions.
-    #updates = rec {
-    #  recurseForDerivations = true;
-    #  version = "17.1.1.593";
-    #  updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/17.1std.1/593/update";
-    #  components = {
-    #    recurseForDerivations = true;
-    #    quartus = fetchurl {
-    #      # Size: 1.9 GB MD5: 70E8016EA12CF7835DFCD3B22B1E3153
-    #      url = "${updateBaseUrl}/QuartusSetup-${version}-linux.run";
-    #      sha256 = "1nk903prd6qs1v5dyyh1l227drk7m99zssp3dc8v4jq53fv9hsjs";
-    #    };
-    #  };
-    #};
-
   };
+
+  
 
 }
