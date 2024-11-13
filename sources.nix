@@ -31,7 +31,7 @@
 # instead. Use a human to verify sha256 -> md5 sums. For example, this command
 # outputs the md5 sums for the Quartus Prime 16 Standard Edition components, as
 # is, in the nix store:
-# $ nix-build -A altera-quartuses.sources.v16.standard_edition | while read f; do md5sum "$f"; done
+# $ nix-build -A altera-quartuses.sources.v16.standard | while read f; do md5sum "$f"; done
 
 let requireQuartus =
     { name
@@ -50,7 +50,7 @@ in {
 
   v14 = rec {
     version = "14.1.0.186";
-    baseUrl = "http://download.altera.com/akdlm/software/acdsinst/14.1/186/ib_installers";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/14.1/186/ib_installers";
 
     web_edition = {
       baseName = "altera-quartus-ii-web";
@@ -167,7 +167,7 @@ in {
     # either web or subscription editions.
     updates = rec {
       version = "14.1.1.190";
-      updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/14.1.1/190/update";
+      updateBaseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/14.1.1/190/update";
       components = {
         quartus = fetchurl {
           # Size: 1.2 GB MD5: AA1623894DE38069635913DA2DE33167
@@ -181,9 +181,9 @@ in {
 
   v15 = rec {
     version = "15.1.0.185";
-    baseUrl = "http://download.altera.com/akdlm/software/acdsinst/15.1/185/ib_installers";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/15.1/185/ib_installers";
 
-    lite_edition = {
+    lite = {
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
       inherit version updates;
@@ -226,7 +226,7 @@ in {
       };
     };
 
-    standard_edition = {
+    standard = {
       baseName = "altera-quartus-prime-standard";
       prettyName = "Quartus Prime Standard Edition";
       inherit version updates;
@@ -308,7 +308,7 @@ in {
     # either lite or standard editions.
     updates = rec {
       version = "15.1.2.193";
-      updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/15.1.2/193/update";
+      updateBaseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/15.1.2/193/update";
       components = {
         quartus = fetchurl {
           # Size: 4.1 GB MD5: EECCEF76A26E98E8022C59C7491FC215
@@ -322,9 +322,9 @@ in {
 
   v16 = rec {
     version = "16.1.0.196";
-    baseUrl = "http://download.altera.com/akdlm/software/acdsinst/16.1/196/ib_installers";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/16.1/196/ib_installers";
 
-    lite_edition = {
+    lite = {
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
       inherit version updates;
@@ -367,7 +367,7 @@ in {
       };
     };
 
-    standard_edition = {
+    standard = {
       baseName = "altera-quartus-prime-standard";
       prettyName = "Quartus Prime Standard Edition";
       inherit version updates;
@@ -449,7 +449,7 @@ in {
     # either lite or standard editions.
     updates = rec {
       version = "16.1.2.203";
-      updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/16.1.2/203/update";
+      updateBaseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/16.1.2/203/update";
       components = {
         quartus = fetchurl {
           # Size: 2.4 GB MD5: 607E5CBFF6B674034413E675655DDA32
@@ -463,9 +463,9 @@ in {
 
   v17 = rec {
     version = "17.1.0.590";
-    baseUrl = "http://download.altera.com/akdlm/software/acdsinst/17.1std/590/ib_installers";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/17.1std/590/ib_installers";
 
-    lite_edition = {
+    lite = {
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
       inherit version updates;
@@ -513,7 +513,7 @@ in {
       };
     };
 
-    standard_edition = {
+    standard = {
       baseName = "altera-quartus-prime-standard";
       prettyName = "Quartus Prime Standard Edition";
       inherit version updates;
@@ -600,7 +600,7 @@ in {
     # either lite or standard editions.
     updates = rec {
       version = "17.1.1.593";
-      updateBaseUrl = "http://download.altera.com/akdlm/software/acdsinst/17.1std.1/593/update";
+      updateBaseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/17.1std.1/593/update";
       components = {
         quartus = fetchurl {
           # Size: 1.9 GB MD5: 70E8016EA12CF7835DFCD3B22B1E3153
@@ -613,12 +613,11 @@ in {
 
   v18 = rec {
     version = "18.1.0.625";
-    baseUrl = "http://download.altera.com/akdlm/software/acdsinst/18.1std/625/ib_installers";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/18.1std/625/ib_installers";
 
-    lite_edition = {
+    lite = {
       baseName = "altera-quartus-prime-lite";
       prettyName = "Quartus Prime Lite Edition";
-      #inherit version is32bitpackage updates;
       inherit version;
       components = {
         quartus = fetchurl {
@@ -631,40 +630,203 @@ in {
           url = "${baseUrl}/ModelSimSetup-${version}-linux.run";
           sha256 = "02e2a5ada4cdad78a1988508a98f8851c1a47ca82297ec4dc67b19b9414f52c1";
         };
-        #arria = fetchurl {
-        #  # Size: 499.6 MB MD5: EA15FB95662AB632F2CD95A93D995A92
-        #  url = "${baseUrl}/arria_lite-${version}.qdz";
-        #  sha256 = "0ql9k0gsj1jg4c89afjg61gfy1zwmjmpxzjixrjvphiszk6gmadp";
-        #};
         cyclone = fetchurl {
           # Size: 466.6 MB MD5: 09D346E4AE7AC403DF4F36563E6B7BFB
           url = "${baseUrl}/cyclone-${version}.qdz";
           sha256 = "cb19bc70de45af52490f53b15931861949ce460cbcdf92aec4fd01192c957efd";
         };
-        #cyclone10lp = fetchurl {
-        #  # Size: 266.1 MB MD5: C9D4AC6A692BE4C3EAC15473325218BB
-        #  url = "${baseUrl}/cyclone10lp-${version}.qdz";
-        #  sha256 = "0vj5wxplpkhz4bmc0r2dbghnifznw6rm1jqjxqf6bmj23ap6qahq";
-        #};
         cyclonev = fetchurl {
           # Size: 1.1 GB MD5: 747202966905F7917FB3B8F95228E026
           url = "${baseUrl}/cyclonev-${version}.qdz";
           sha256 = "03f89491eeb1a9dafb8b9d244db34f4fe25da1a5fd38d07c499733444c456329";
         };
-        #max = fetchurl {
-        #  # Size: 11.4 MB MD5: 77B086D125489CD74D05FD9ED1AA4883
-        #  url = "${baseUrl}/max-${version}.qdz";
-        #  sha256 = "12h6sgqqdjf929mmdis5wad85c5bjmnwlp8xqjxl3hhzd15x1xcd";
-        #};
-        #max10 = fetchurl {
-        #  # Size: 325.2 MB MD5: 9B55655054A7EA1409160F27592F2358
-        #  url = "${baseUrl}/max10-${version}.qdz";
-        #  sha256 = "0xwvy7ja637qh7dbf64pxrhqhyr15ws9wdir1zfxwahdw0n1ril5";
-        #};
+      };
+    };
+
+    standard = {
+      baseName = "altera-quartus-prime-standard";
+      prettyName = "Quartus Prime Standard Edition";
+      inherit version;
+      components = {
+        quartus = fetchurl {
+          # Size: 2.7 GB SHA1: f9e4ffca9d7cfe26b30873d17893a041f726cce3
+          url = "${baseUrl}/QuartusSetup-${version}-linux.run";
+          hash = "sha256-5bJWMmuwDq3Txkbihf6RhEoPrM3sMGwDKIuSDtxiKo8=";
+        };
+        modelsim = fetchurl {
+          # Size: 1.1 GB SHA1: 128f18e1fe798786176108cbca3a21791d37f7ba
+          url = "${baseUrl}/ModelSimSetup-${version}-linux.run";
+          sha256 = "02e2a5ada4cdad78a1988508a98f8851c1a47ca82297ec4dc67b19b9414f52c1";
+        };
+        cyclone = fetchurl {
+          # Size: 466.6 MB SHA1: 0063923ed4b3e12f706a5fb95ddce71fbb89d833
+          url = "${baseUrl}/cyclone-${version}.qdz";
+          sha256 = "cb19bc70de45af52490f53b15931861949ce460cbcdf92aec4fd01192c957efd";
+        };
+        cyclonev = fetchurl {
+          # Size: 1.1 GB SHA1: be21e885ffd70321d926dbe269ee8c2ef7ad615e
+          url = "${baseUrl}/cyclonev-${version}.qdz";
+          sha256 = "03f89491eeb1a9dafb8b9d244db34f4fe25da1a5fd38d07c499733444c456329";
+        };
       };
     };
   };
 
-  
+  v19 = rec {
+    version = "19.1.0.670";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/19.1std/670/ib_installers";
 
+    lite = {
+      inherit version baseUrl;
+      mandatoryInstalls = [ "QuartusLiteSetup" ];
+      mandatoryComponents = [];
+      defaultInstalls = [];
+      defaultComponents = [ "cyclonev" ];
+      installers = {
+        QuartusLiteSetup = "sha256-7lSUicFPagOFKzotboQh/kPfvw110sEpVEnMhjvefZc=";
+        ModelSimSetup = "sha256-2fhBwSoNc2AiIGhhDcojv/askOn0iqosQpsyGVJ2O0g=";
+      };
+      deviceComponents = {
+        arria_lite = "";
+        cyclone = "";
+        cyclone10lp = "";
+        cyclonev = "sha256-S+Hfv6mUlt+TB6FrCerElb6PWS0HSzCpNh7A++S+HS8=";
+        max = "";
+        max10 = "";
+      };
+      extraComponents = {};
+    };
+
+    standard = {
+      inherit version baseUrl;
+      mandatoryInstalls = [ "QuartusSetup" ];
+      mandatoryComponents = [];
+      defaultInstalls = [];
+      defaultComponents = [ "cyclonev" ];
+      installers = {
+        QuartusSetup = "sha256-mvjYX/JyISs0NQRkQWO+IlX5+2VNtk5OLJYPOx7LWnI=";
+        ModelSimSetup = "sha256-2fhBwSoNc2AiIGhhDcojv/askOn0iqosQpsyGVJ2O0g=";
+      };
+      deviceComponents = {
+        cyclonev = "sha256-S+Hfv6mUlt+TB6FrCerElb6PWS0HSzCpNh7A++S+HS8=";
+      };
+      extraComponents = {};
+    };
+  };
+  v20 = rec {
+    version = "20.1.1.720";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/20.1std.1/720/ib_installers";
+
+    lite = {
+      inherit version baseUrl;
+      mandatoryInstalls = [ "QuartusLiteSetup" ];
+      mandatoryComponents = [];
+      defaultInstalls = [];
+      defaultComponents = [ "cyclonev" ];
+      installers = {
+        QuartusLiteSetup = "sha256-c7CwFtQsvRGd2qFZ6l7f3KFFnCXrloRPvrGJMF4OV1Y=";
+        ModelSimSetup = "";
+      };
+      deviceComponents = {
+        arria_lite = "";
+        cyclone = "";
+        cyclone10lp = "";
+        cyclonev = "sha256-Uz2KGuVouBuzaiLeNpp9IBF34yk58DG2r9PVen9SaoU=";
+        max = "";
+        max10 = "";
+      };
+      extraComponents = {};
+    };
+
+    standard = {
+      inherit version baseUrl;
+      mandatoryInstalls = [ "QuartusSetup" ];
+      mandatoryComponents = [];
+      defaultInstalls = [];
+      defaultComponents = [ "cyclonev" ];
+      installers = {
+        QuartusSetup = "";
+        ModelSimSetup = "";
+      };
+      deviceComponents = {
+        cyclonev = "sha256-Uz2KGuVouBuzaiLeNpp9IBF34yk58DG2r9PVen9SaoU=";
+      };
+      extraComponents = {};
+    };
+  };
+  v21 = rec {
+    version = "21.1.1.850";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/21.1std.1/850/ib_installers";
+
+    lite = {
+      inherit version baseUrl;
+      mandatoryInstalls = [ "QuartusLiteSetup" ];
+      mandatoryComponents = [];
+      defaultInstalls = [];
+      defaultComponents = [ "cyclonev" ];
+      installers = {
+        QuartusLiteSetup = "sha256-6lUHQKL8LU70WeRTT1nMsGqaqjmvo9hWlbFQPBMl/0o=";
+        QuestaSetup = "";
+      };
+      deviceComponents = {
+        arria_lite = "";
+        cyclone = "";
+        cyclone10lp = "";
+        cyclonev = "sha256-qH73W5zV4unIIhOxajT2gonpqpbiuqTZThCGvy4TFYo=";
+        max = "";
+        max10 = "";
+      };
+      extraComponents = {};
+    };
+  };
+  v22 = rec {
+    version = "22.1std.2.922";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/22.1std.2/922/ib_installers";
+
+    lite = {
+      inherit version baseUrl;
+      mandatoryInstalls = [ "QuartusLiteSetup" ];
+      mandatoryComponents = [];
+      defaultInstalls = [];
+      defaultComponents = [ "cyclonev" ];
+      installers = {
+        QuartusLiteSetup = "sha256-gxo8y1umP/mt3aKbrRl5WjwTH4/8/p2tNzYUtq4gHR0=";
+        QuestaSetup = "";
+      };
+      deviceComponents = {
+        arria_lite = "";
+        cyclone = "";
+        cyclone10lp = "";
+        cyclonev = "sha256-TN6EnXNZJoXt7gO+dx5c8zGYR+RxtYjEdKIQH8WjNSQ=";
+        max = "";
+        max10 = "";
+      };
+      extraComponents = {};
+    };
+  };
+  v23 = rec {
+    version = "23.1std.1.993";
+    baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/23.1std.1/993/ib_installers";
+
+    lite = {
+      inherit version baseUrl;
+      mandatoryInstalls = [ "QuartusLiteSetup" ];
+      mandatoryComponents = [];
+      defaultInstalls = [];
+      defaultComponents = [ "cyclonev" ];
+      installers = {
+        QuartusLiteSetup = "sha256-OCp2hZrfrfp1nASuVNWgg8/ODRrl67SJ+c6IWq5eWvY=";
+        QuestaSetup = "";
+      };
+      deviceComponents = {
+        arria_lite = "";
+        cyclone = "";
+        cyclone10lp = "";
+        cyclonev = "sha256-HoNJkcD96rPQEZtjbtmiRpoKh8oni7gOLVi80c1a3TM=";
+        max = "";
+        max10 = "";
+      };
+      extraComponents = {};
+    };
+  };
 }

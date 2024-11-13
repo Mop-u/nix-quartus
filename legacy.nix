@@ -70,13 +70,13 @@ with pkgs; let
       mkdir -p "$chrootdir"/lib
       mkdir -p "$chrootdir"/lib64
       mkdir -p "$chrootdir"/bin
-      ${utillinux}/bin/mount --rbind /     "$chrootdir"/host
-      ${utillinux}/bin/mount --rbind /proc "$chrootdir"/proc
-      ${utillinux}/bin/mount --rbind /nix  "$chrootdir"/nix
-      ${utillinux}/bin/mount --rbind /tmp  "$chrootdir"/tmp
-      ${utillinux}/bin/mount --rbind /dev  "$chrootdir"/dev
-      ${utillinux}/bin/mount --rbind "${glibc_lib_for_installer}"/lib64 "$chrootdir"/lib64
-      ${utillinux}/bin/mount --rbind "${bash}"/bin "$chrootdir"/bin
+      ${util-linux}/bin/mount --rbind /     "$chrootdir"/host
+      ${util-linux}/bin/mount --rbind /proc "$chrootdir"/proc
+      ${util-linux}/bin/mount --rbind /nix  "$chrootdir"/nix
+      ${util-linux}/bin/mount --rbind /tmp  "$chrootdir"/tmp
+      ${util-linux}/bin/mount --rbind /dev  "$chrootdir"/dev
+      ${util-linux}/bin/mount --rbind "${glibc_lib_for_installer}"/lib64 "$chrootdir"/lib64
+      ${util-linux}/bin/mount --rbind "${bash}"/bin "$chrootdir"/bin
       chroot "$chrootdir" "$@"
     '');
 
@@ -90,7 +90,7 @@ with pkgs; let
           echo "Usage: run-in-fhs-env <COMMAND> [ARGS...]"
           exit 1
       fi
-      "${utillinux}/bin/unshare" -r -U -m "${setup-chroot-and-exec}" "$@"
+      "${util-linux}/bin/unshare" -r -U -m "${setup-chroot-and-exec}" "$@"
     '';
 
   mkInstallersDir = srcs:
