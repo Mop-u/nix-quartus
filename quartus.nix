@@ -1,19 +1,17 @@
 { pkgs
 , source
 , installs ? source.defaultInstalls
-, devices ? source.defaultComponents
+, devices ? source.defaultDevices
 }:
 
   with pkgs; let
 
 
-  allInstallers = lib.mapAttrsToList (name: value: name) source.installers;
-  allDevices = lib.mapAttrsToList (name: value: name) source.deviceComponents;
-  allExtras = lib.mapAttrsToList (name: value: name) source.extraComponents;
-  allComponents = allDevices ++ allExtras;
+  allInstallers = lib.mapAttrsToList (n: v: n) source.installers;
+  allDevices = lib.mapAttrsToList (n: v: n) source.devices;
 
-  installList = lib.unique (source.mandatoryInstalls ++ installs);
-  componentList = lib.unique (source.mandatoryComponents ++ devices);
+  installList = lib.unique ([source.quartusInstaller] ++ installs);
+  installPartList = lib.concatMap (id: (lib.mapAttrsToList (n: v: n) (source.installerParts.${id} or {}))) installList;
 
   # v21 and higher have Questa
   hasQuesta = lib.any (id: id == "QuestaSetup") allInstallers;
@@ -23,32 +21,46 @@
   hasModelSim = lib.any (id: id == "ModelSimSetup") allInstallers;
   withModelSim = lib.any (id: id == "ModelSimSetup") installList;
 
-  selectedDevices = lib.intersectLists allDevices componentList;
+  selectedDevices = lib.intersectLists allDevices (lib.unique devices); # TODO: error if device not in list
   unselectedDevices = lib.subtractLists allDevices selectedDevices;
 
-  sourceHashes = (source.installers // source.deviceComponents // source.extraComponents);
+  installPartHashes = lib.mergeAttrsList (map (id: 
+    source.installerParts.${id} or {}
+  ) allInstallers);
+
+  componentTree = lib.mapAttrs (n: v: 
+    (if (lib.isString v) then { ${n} = v; } else v)
+  ) source.devices;
 
   version = source.version;
 
   download = {name, hash}: fetchurl {
     inherit name hash;
-    # e.g. "23.1std.0.991" -> "23.1std/921"
     url = "${source.baseUrl}/${name}";
   };
 
   installers = map (id: download {
     name = "${id}-${version}-linux.run";
-    hash = lib.getAttr id sourceHashes;
+    hash = source.installers.${id};
   }) installList;
 
-  components = map (id: download {
-    name = "${id}-${version}.qdz";
-    hash = lib.getAttr id sourceHashes;
-  }) componentList;
+  components = lib.unique (
+    (map (id: download {
+      name = "${id}-${version}-linux.qdz";
+      hash = installPartHashes.${id};
+    }) installPartList)
+  ++ 
+    (lib.concatMap (dev: 
+      (map (part: download {
+        name = "${part}-${version}.qdz";
+        hash = componentTree.${dev}.${part};
+      }) (lib.mapAttrsToList (n: v: n) componentTree.${dev}))
+    ) selectedDevices)
+  );
 
 in stdenv.mkDerivation {
   inherit version;
-  pname = "quartus-prime-lite-unwrapped";
+  pname = "quartus-prime-${source.variant}-unwrapped";
 
   nativeBuildInputs = [ unstick ];
 
@@ -84,8 +96,10 @@ in stdenv.mkDerivation {
       rm -r $out/uninstall $out/logs
 
       # replace /proc pentium check with a true statement. this allows usage under emulation.
-      substituteInPlace $out/quartus/adm/qenv.sh \
-        --replace-fail 'grep sse /proc/cpuinfo > /dev/null 2>&1' ':'
+      ${if (source.variant!="pro") then ''
+        substituteInPlace $out/quartus/adm/qenv.sh \
+          --replace-fail 'grep sse /proc/cpuinfo > /dev/null 2>&1' ':'
+      '' else ""}
     '';
 
   meta = with lib; {

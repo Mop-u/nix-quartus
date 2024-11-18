@@ -92,10 +92,19 @@
       quartus-prime-lite-23 = 
         mkQuartus sources.v23.lite;
 
+      quartus-prime-standard-23 = 
+        mkQuartus sources.v23.standard;
+
+      quartus-prime-pro-23 = 
+        mkQuartus sources.v23.pro;
+
+      quartus-prime-pro-24 = 
+        mkQuartus sources.v24.pro;
+
       # Aliases to latest versions
       quartus-prime-lite = quartus-prime-lite-23;
-      quartus-prime-standard = quartus-prime-standard-20;
-      quartus-prime-pro = quartus-prime-standard;
+      quartus-prime-standard = quartus-prime-standard-23;
+      quartus-prime-pro = quartus-prime-pro-24;
     };
   });
 }

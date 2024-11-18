@@ -677,16 +677,17 @@ in {
     baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/19.1std/670/ib_installers";
 
     lite = {
+      variant = "lite";
       inherit version baseUrl;
-      mandatoryInstalls = [ "QuartusLiteSetup" ];
-      mandatoryComponents = [];
+      quartusInstaller = "QuartusLiteSetup";
+      
       defaultInstalls = [];
-      defaultComponents = [ "cyclonev" ];
+      defaultDevices = [ "cyclonev" ];
       installers = {
         QuartusLiteSetup = "sha256-7lSUicFPagOFKzotboQh/kPfvw110sEpVEnMhjvefZc=";
         ModelSimSetup = "sha256-2fhBwSoNc2AiIGhhDcojv/askOn0iqosQpsyGVJ2O0g=";
       };
-      deviceComponents = {
+      devices = {
         arria_lite = "";
         cyclone = "";
         cyclone10lp = "";
@@ -694,23 +695,24 @@ in {
         max = "";
         max10 = "";
       };
-      extraComponents = {};
+      
     };
 
     standard = {
+      variant = "standard";
       inherit version baseUrl;
-      mandatoryInstalls = [ "QuartusSetup" ];
-      mandatoryComponents = [];
+      quartusInstaller = "QuartusSetup";
+      
       defaultInstalls = [];
-      defaultComponents = [ "cyclonev" ];
+      defaultDevices = [ "cyclonev" ];
       installers = {
         QuartusSetup = "sha256-mvjYX/JyISs0NQRkQWO+IlX5+2VNtk5OLJYPOx7LWnI=";
         ModelSimSetup = "sha256-2fhBwSoNc2AiIGhhDcojv/askOn0iqosQpsyGVJ2O0g=";
       };
-      deviceComponents = {
+      devices = {
         cyclonev = "sha256-S+Hfv6mUlt+TB6FrCerElb6PWS0HSzCpNh7A++S+HS8=";
       };
-      extraComponents = {};
+      
     };
   };
   v20 = rec {
@@ -718,16 +720,17 @@ in {
     baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/20.1std.1/720/ib_installers";
 
     lite = {
+      variant = "lite";
       inherit version baseUrl;
-      mandatoryInstalls = [ "QuartusLiteSetup" ];
-      mandatoryComponents = [];
+      quartusInstaller = "QuartusLiteSetup";
+      
       defaultInstalls = [];
-      defaultComponents = [ "cyclonev" ];
+      defaultDevices = [ "cyclonev" ];
       installers = {
         QuartusLiteSetup = "sha256-c7CwFtQsvRGd2qFZ6l7f3KFFnCXrloRPvrGJMF4OV1Y=";
         ModelSimSetup = "";
       };
-      deviceComponents = {
+      devices = {
         arria_lite = "";
         cyclone = "";
         cyclone10lp = "";
@@ -735,23 +738,38 @@ in {
         max = "";
         max10 = "";
       };
-      extraComponents = {};
+      
     };
 
     standard = {
+      variant = "standard";
       inherit version baseUrl;
-      mandatoryInstalls = [ "QuartusSetup" ];
-      mandatoryComponents = [];
+      quartusInstaller = "QuartusSetup";
+      
       defaultInstalls = [];
-      defaultComponents = [ "cyclonev" ];
+      defaultDevices = [ "cyclonev" ];
       installers = {
         QuartusSetup = "";
         ModelSimSetup = "";
       };
-      deviceComponents = {
+      devices = {
+        arria = "";
+        arria10 = {
+          arria10_part1 = "";
+          arria10_part2 = "";
+          arria10_part3 = "";
+        };
+        arriav = "";
+        arriavgz = "";
+        cyclone = "";
+        cyclone10lp = "";
         cyclonev = "sha256-Uz2KGuVouBuzaiLeNpp9IBF34yk58DG2r9PVen9SaoU=";
+        max = "";
+        max10 = "";
+        stratixiv = "";
+        stratixv = "";
       };
-      extraComponents = {};
+      
     };
   };
   v21 = rec {
@@ -759,16 +777,17 @@ in {
     baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/21.1std.1/850/ib_installers";
 
     lite = {
+      variant = "lite";
       inherit version baseUrl;
-      mandatoryInstalls = [ "QuartusLiteSetup" ];
-      mandatoryComponents = [];
+      quartusInstaller = "QuartusLiteSetup";
+      
       defaultInstalls = [];
-      defaultComponents = [ "cyclonev" ];
+      defaultDevices = [ "cyclonev" ];
       installers = {
         QuartusLiteSetup = "sha256-6lUHQKL8LU70WeRTT1nMsGqaqjmvo9hWlbFQPBMl/0o=";
         QuestaSetup = "";
       };
-      deviceComponents = {
+      devices = {
         arria_lite = "";
         cyclone = "";
         cyclone10lp = "";
@@ -776,7 +795,7 @@ in {
         max = "";
         max10 = "";
       };
-      extraComponents = {};
+      
     };
   };
   v22 = rec {
@@ -784,16 +803,16 @@ in {
     baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/22.1std.2/922/ib_installers";
 
     lite = {
+      variant = "lite";
       inherit version baseUrl;
-      mandatoryInstalls = [ "QuartusLiteSetup" ];
-      mandatoryComponents = [];
+      quartusInstaller = "QuartusLiteSetup";
       defaultInstalls = [];
-      defaultComponents = [ "cyclonev" ];
+      defaultDevices = [ "cyclonev" ];
       installers = {
         QuartusLiteSetup = "sha256-gxo8y1umP/mt3aKbrRl5WjwTH4/8/p2tNzYUtq4gHR0=";
         QuestaSetup = "";
       };
-      deviceComponents = {
+      devices = {
         arria_lite = "";
         cyclone = "";
         cyclone10lp = "";
@@ -801,7 +820,7 @@ in {
         max = "";
         max10 = "";
       };
-      extraComponents = {};
+      
     };
   };
   v23 = rec {
@@ -809,24 +828,109 @@ in {
     baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/23.1std.1/993/ib_installers";
 
     lite = {
+      variant = "lite";
       inherit version baseUrl;
-      mandatoryInstalls = [ "QuartusLiteSetup" ];
-      mandatoryComponents = [];
+      quartusInstaller = "QuartusLiteSetup";
       defaultInstalls = [];
-      defaultComponents = [ "cyclonev" ];
+      defaultDevices = [ "cyclonev" ];
       installers = {
         QuartusLiteSetup = "sha256-OCp2hZrfrfp1nASuVNWgg8/ODRrl67SJ+c6IWq5eWvY=";
+        QuestaSetup = "sha256-Dne4MLFSGXUVLMd+JgiS/d5RX9t5gs6PEvexTssLdF4=";
+      };
+      devices = {
+        arria_lite = "sha256-PNoc15Y5h+2bxhYFIxkg1qVAsXIX3IMfEQSdPLVNUp4=";
+        cyclone = "sha256-2huDuTkXt6jszwih0wzusoxRvECi6+tupvRcUvn6eIA=";
+        cyclone10lp = "sha256-i8VJKqlIfQmK2GWhm0W0FujHcup4RjeXughL2VG5gkY=";
+        cyclonev = "sha256-HoNJkcD96rPQEZtjbtmiRpoKh8oni7gOLVi80c1a3TM=";
+        max = "sha256-qh920mvu0H+fUuSJBH7fDPywzll6sGdmEtfx32ApCSA=";
+        max10 = "sha256-XOyreAG3lYEV7Mnyh/UnFTuOwPQsd/t23Q8/P2p6U+0=";
+      };
+    };
+
+    standard = {
+      variant = "standard";
+      inherit version baseUrl;
+      quartusInstaller = "QuartusSetup";
+      defaultInstalls = [];
+      defaultDevices = [ "cyclonev" ];
+      installers = {
+        QuartusSetup = "sha256-wWM4DE4SCda+9bKWOY+RXez3ht0phBI/zeFKa5TzhrA=";
+        QuestaSetup = "sha256-Dne4MLFSGXUVLMd+JgiS/d5RX9t5gs6PEvexTssLdF4=";
+      };
+      devices = {
+        arria = "sha256-yl5Oo1X0eSlTHfVZnUnvytcP575g8n/wAZDbMjePU5c=";
+        arria10 = "sha256-ahBSHA3Tq3Z3DXqXJlyBLKcdyXQzNRqpkdsUbQI4cEM=";
+        arriav = "sha256-Rv8lxMBrx1aQOlalFT1+J2DBUYHGHn8twfj3dpLAv/o=";
+        arriavgz = "sha256-eDC7rcL/WzXXECeSNDSvG1Heo+1kjr0fus1wxpcaebI=";
+        cyclone = "sha256-2huDuTkXt6jszwih0wzusoxRvECi6+tupvRcUvn6eIA=";
+        cyclone10lp = "sha256-i8VJKqlIfQmK2GWhm0W0FujHcup4RjeXughL2VG5gkY=";
+        cyclonev = "sha256-HoNJkcD96rPQEZtjbtmiRpoKh8oni7gOLVi80c1a3TM=";
+        max = "sha256-qh920mvu0H+fUuSJBH7fDPywzll6sGdmEtfx32ApCSA=";
+        max10 = "sha256-XOyreAG3lYEV7Mnyh/UnFTuOwPQsd/t23Q8/P2p6U+0=";
+        stratixiv = "sha256-1UoJDaaiOFshs7i9B/JdIkGUXF863jYiFNObNX71cJY=";
+        stratixv = "sha256-Pi5MpgadLGqCr8xcsy80U5ZLpP1sI/dr8gNyTIvu+5k=";
+      };
+    };
+
+    pro = {
+      variant = "pro";
+      version = "23.4.0.79";
+      baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/23.4/79/ib_installers";
+      
+      quartusInstaller = "QuartusProSetup";
+      defaultInstalls = [];
+      defaultDevices = [ "cyclone10gx" ];
+      installers = {
+        QuartusProSetup = "sha256-Tcsn8WJ8XQG/irmQyMxu2oMgzc0Dj0llAK8UDZ92wpg=";
         QuestaSetup = "";
       };
-      deviceComponents = {
-        arria_lite = "";
-        cyclone = "";
-        cyclone10lp = "";
-        cyclonev = "sha256-HoNJkcD96rPQEZtjbtmiRpoKh8oni7gOLVi80c1a3TM=";
-        max = "";
-        max10 = "";
+      installerParts = {
+        QuartusProSetup = {
+          QuartusProSetup-part2 = "";
+        };
       };
-      extraComponents = {};
+      devices = {
+        agilex7 = "";
+        arria10 = "";
+        cyclone10gx = "sha256-azbOsqybxSNwtpp2dlPn0ZMrrFRekWmqtYgCC8kBkZw=";
+        easicn5x = "";
+        stratix10 = "";
+      };
+    };
+  };
+  v24 = {
+    pro = {
+      variant = "pro";
+      version = "24.2.0.40";
+      baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/24.2/40/ib_installers";
+
+      quartusInstaller = "QuartusProSetup";
+      defaultInstalls = [];
+      defaultDevices = [ "cyclone10gx" ];
+
+      installers = {
+        QuartusProSetup = "sha256-/z05N2kaTzfbCbeWqKzutCbzhUI9cmgndhYV77g///k=";
+        QuestaSetup = "sha256-9MrQ42v/nSFeN1UaSIjkAEM8xEcfm+dhqvEFKQ6migY=";
+      };
+
+      installerParts.QuartusProSetup = {
+        QuartusProSetup-part2 = "sha256-6QMY2G4YKB+f7MH7rJNRyX3W1nanl06HOf3Y4RgT6lU=";
+      };
+
+      devices = let
+        agilex_common = "sha256-6S0TUBxo7ceWGOkKgd8qmg9LJ44nrdcARHG4WN7OqnE=";
+      in {
+        agilex5 = { inherit agilex_common;
+          agilex5 = "sha256-dvvpsgUiscJDwAT0zPNt/g+4eFbLDuqW6nvp18Ju5Aw=";
+        };
+        agilex7 = { inherit agilex_common;
+          agilex7 = "sha256-8phcjTJH5W+xawvpkd7iBNWl5IyVsLvcDyZLGOFdM3s=";
+        };
+        arria10 = "sha256-QvPncnzF4Y1yjZpINqOdja52Fw37Z09xsrrMHd7L3Nk=";
+        cyclone10gx = "sha256-p3/7RYlQDeNlxd70hovNZpc9gvG2qdiJbY1zT2r2M8Q=";
+        easicn5x = "sha256-QRvmius45cMBkJP62mtWYvu7gsxWcavlt1oAW8e/gOg=";
+        stratix10 = "sha256-akbCoK59jWeVkQIdle5NAEPpkd4dlyNETvmsEndvdmg=";
+      };
     };
   };
 }
