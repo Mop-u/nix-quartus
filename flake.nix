@@ -12,19 +12,19 @@
   let
     pkgs = import nixpkgs { inherit system; config.allowUnfree = true; }; #nixpkgs.legacyPackages.${system};
 
-    sources = with pkgs; import ./sources.nix { inherit fetchurl requireFile; };
-
-    buildLegacyQuartus = import ./legacy.nix { inherit pkgs; };
-
+    sources = import ./sources.nix {};
     buildQuartus = import ./package.nix;
 
-    mkLegacyQuartus = srcAttrs: buildLegacyQuartus {
-      inherit (srcAttrs) baseName prettyName;
-      version = srcAttrs.version;
-      components = with srcAttrs.components; [
+    legacySources = with pkgs; import ./legacySources.nix { inherit fetchurl requireFile; };
+    buildLegacyQuartus = import ./legacyPackage.nix { inherit pkgs; };
+
+    mkLegacyQuartus = legacySource: buildLegacyQuartus {
+      inherit (legacySource) baseName prettyName;
+      version = legacySource.version;
+      components = with legacySource.components; [
         quartus # TODO: expose component selection to flake
       ];
-      #updateComponents = with srcAttrs.updates.components; [
+      #updateComponents = with legacySource.updates.components; [
       #  quartus
       #];
     };
@@ -37,37 +37,37 @@
     packages = rec {
 
       quartus-ii-subscription-13 =
-        mkLegacyQuartus sources.v13.subscription_edition;
+        mkLegacyQuartus legacySources.v13.subscription_edition;
 
       quartus-ii-web-14 =
-        mkLegacyQuartus sources.v14.web_edition;
+        mkLegacyQuartus legacySources.v14.web_edition;
 
       quartus-ii-subscription-14 =
-        mkLegacyQuartus sources.v14.subscription_edition;
+        mkLegacyQuartus legacySources.v14.subscription_edition;
 
       quartus-prime-lite-15 =
-        mkLegacyQuartus sources.v15.lite;
+        mkLegacyQuartus legacySources.v15.lite;
 
       quartus-prime-standard-15 =
-        mkLegacyQuartus sources.v15.standard;
+        mkLegacyQuartus legacySources.v15.standard;
 
       quartus-prime-lite-16 =
-        mkLegacyQuartus sources.v16.lite;
+        mkLegacyQuartus legacySources.v16.lite;
 
       quartus-prime-standard-16 =
-        mkLegacyQuartus sources.v16.standard;
+        mkLegacyQuartus legacySources.v16.standard;
 
       quartus-prime-lite-17 =
-        mkLegacyQuartus sources.v17.lite;
+        mkLegacyQuartus legacySources.v17.lite;
 
       quartus-prime-standard-17 =
-        mkLegacyQuartus sources.v17.standard;
+        mkLegacyQuartus legacySources.v17.standard;
 
       quartus-prime-lite-18 =
-        mkLegacyQuartus sources.v18.lite;
+        mkLegacyQuartus legacySources.v18.lite;
 
       quartus-prime-standard-18 =
-        mkLegacyQuartus sources.v18.standard;
+        mkLegacyQuartus legacySources.v18.standard;
 
       # mkLegacyQuartus crashes from v19 onwards with:
       #   Error changing permissions to 042750 in /nix/store/w49zcrkmcx8lyclbwsxkz0y45y7ys8ka-altera-quartus-prime-lite-unwrapped-19.1.0.670/ip/altera/mentor_vip_ae/axi3
