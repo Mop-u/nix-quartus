@@ -1,103 +1,48 @@
 {
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    systems.url = "github:nix-systems/x86_64-linux";
-
-    flake-utils.url = "github:numtide/flake-utils";
-    flake-utils.inputs.systems.follows = "systems";
-  };
-
-  outputs = { self, nixpkgs, flake-utils, ... }: flake-utils.lib.eachDefaultSystem (system:
-  let
-    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; }; #nixpkgs.legacyPackages.${system};
-
-    sources = import ./sources.nix {};
-    buildQuartus = import ./package.nix;
-
-    legacySources = with pkgs; import ./legacySources.nix { inherit fetchurl requireFile; };
-    buildLegacyQuartus = import ./legacyPackage.nix { inherit pkgs; };
-
-    mkLegacyQuartus = legacySource: buildLegacyQuartus {
-      inherit (legacySource) baseName prettyName;
-      version = legacySource.version;
-      components = with legacySource.components; [
-        quartus # TODO: expose component selection to flake
-      ];
-      #updateComponents = with legacySource.updates.components; [
-      #  quartus
-      #];
+    inputs = {
+        nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
+    outputs = { self, nixpkgs, flake-utils, ... }:
+    let
+        system = "x86_64-linux";
 
-  in {
-    packages = rec {
+        pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+        };
 
-      quartus-ii-subscription-13 =
-        mkLegacyQuartus legacySources.v13.subscription_edition;
+        sources = import ./sources.nix {};
 
-      quartus-ii-web-14 =
-        mkLegacyQuartus legacySources.v14.web_edition;
+        mkQuartusUnwrapped = pkgs.callPackage ./make-quartus-unwrapped.nix {
+            inherit (pkgs.stdenv) mkDerivation;
+        };
 
-      quartus-ii-subscription-14 =
-        mkLegacyQuartus legacySources.v14.subscription_edition;
+        mkQuartus = pkgs.callPackage ./make-quartus.nix {
+            inherit mkQuartusUnwrapped;
+        };
 
-      quartus-prime-lite-15 =
-        mkLegacyQuartus legacySources.v15.lite;
+        mkVersion = import ./make-version.nix {
+            inherit pkgs mkQuartus;
+            quartus-sources = sources;
+        };
 
-      quartus-prime-standard-15 =
-        mkLegacyQuartus legacySources.v15.standard;
+        all-quartuses = import ./all-versions.nix {
+            inherit pkgs mkVersion;
+        };
 
-      quartus-prime-lite-16 =
-        mkLegacyQuartus legacySources.v16.lite;
+        run-quartus = pkgs.callPackage ./run-quartus.nix {};
+    in
+        {
+            apps.${system}.default = {
+                type = "app";
+                program = "${run-quartus}/bin/${run-quartus.pname or run-quartus.name}";
+            };
 
-      quartus-prime-standard-16 =
-        mkLegacyQuartus legacySources.v16.standard;
-
-      quartus-prime-lite-17 =
-        mkLegacyQuartus legacySources.v17.lite;
-
-      quartus-prime-standard-17 =
-        mkLegacyQuartus legacySources.v17.standard;
-
-      quartus-prime-lite-18 =
-        mkLegacyQuartus legacySources.v18.lite;
-
-      quartus-prime-standard-18 =
-        mkLegacyQuartus legacySources.v18.standard;
-
-      # mkLegacyQuartus crashes from v19 onwards with:
-      #   Error changing permissions to 042750 in /nix/store/w49zcrkmcx8lyclbwsxkz0y45y7ys8ka-altera-quartus-prime-lite-unwrapped-19.1.0.670/ip/altera/mentor_vip_ae/axi3
-      
-      mkQuartus = conf: buildQuartus rec {
-        inherit pkgs;
-        source = sources."v${builtins.toString conf.version}".${conf.edition};
-        installs = conf.installs or source.defaultInstalls;
-        devices = conf.devices or source.defaultDevices;
-      };
-      
-      # Aliases to latest versions
-      quartus-prime-lite = conf: mkQuartus ({
-          version = conf.version or 23;
-          edition = "lite";
-        } 
-        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
-        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
-      );
-      quartus-prime-standard = conf: mkQuartus ({
-          version = conf.version or 23;
-          edition = "standard";
-        } 
-        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
-        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
-      );
-      quartus-prime-pro = conf: mkQuartus ({
-          version = conf.version or 24;
-          edition = "pro";
-        } 
-        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
-        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
-      );
-    };
-  });
+            packages.${system} = {
+                inherit (all-quartuses)
+                    quartus-prime-lite
+                    quartus-pro-pro;
+            };
+        };
 }
