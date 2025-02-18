@@ -29,9 +29,6 @@
       #];
     };
 
-    mkQuartus = source: buildQuartus {
-      inherit pkgs source;
-    };
 
   in {
     packages = rec {
@@ -71,40 +68,36 @@
 
       # mkLegacyQuartus crashes from v19 onwards with:
       #   Error changing permissions to 042750 in /nix/store/w49zcrkmcx8lyclbwsxkz0y45y7ys8ka-altera-quartus-prime-lite-unwrapped-19.1.0.670/ip/altera/mentor_vip_ae/axi3
-      quartus-prime-lite-19 = 
-        mkQuartus sources.v19.lite;
-        
-      quartus-prime-standard-19 = 
-        mkQuartus sources.v19.standard;
-
-      quartus-prime-lite-20 = 
-        mkQuartus sources.v20.lite;
-
-      quartus-prime-standard-20 = 
-        mkQuartus sources.v20.standard;
-
-      quartus-prime-lite-21 = 
-        mkQuartus sources.v21.lite;
-
-      quartus-prime-lite-22 = 
-        mkQuartus sources.v22.lite;
-        
-      quartus-prime-lite-23 = 
-        mkQuartus sources.v23.lite;
-
-      quartus-prime-standard-23 = 
-        mkQuartus sources.v23.standard;
-
-      quartus-prime-pro-23 = 
-        mkQuartus sources.v23.pro;
-
-      quartus-prime-pro-24 = 
-        mkQuartus sources.v24.pro;
-
+      
+      mkQuartus = conf: buildQuartus rec {
+        inherit pkgs;
+        source = sources."v${builtins.toString conf.version}".${conf.edition};
+        installs = conf.installs or source.defaultInstalls;
+        devices = conf.devices or source.defaultDevices;
+      };
+      
       # Aliases to latest versions
-      quartus-prime-lite = quartus-prime-lite-23;
-      quartus-prime-standard = quartus-prime-standard-23;
-      quartus-prime-pro = quartus-prime-pro-24;
+      quartus-prime-lite = conf: mkQuartus ({
+          version = conf.version or 23;
+          edition = "lite";
+        } 
+        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
+        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
+      );
+      quartus-prime-standard = conf: mkQuartus ({
+          version = conf.version or 23;
+          edition = "standard";
+        } 
+        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
+        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
+      );
+      quartus-prime-pro = conf: mkQuartus ({
+          version = conf.version or 24;
+          edition = "pro";
+        } 
+        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
+        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
+      );
     };
   });
 }

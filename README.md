@@ -20,14 +20,19 @@ inputs = {
 ```
 
 Then add the package as normal for the desired Quartus version. For
-example, to install the Lite Edition of Quartus Prime 18:
+example, to install the Lite Edition of Quartus Prime 23 with support for Cyclone V devices & Questa:
 
 `configuration.nix`
 
 ```nix
 environment.systemPackages = [
     # ...
-    inputs.quartus.packages.${pkgs.system}.quartus-prime-lite-18
+    (inputs.quartus.packages.${pkgs.system}.mkQuartus {
+        edition = "lite";
+        version = 23;
+        installs = [ "QuestaSetup" ];
+        devices = [ "cyclonev" ];
+    })
     # ...
 ];
 ```
