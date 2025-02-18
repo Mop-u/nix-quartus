@@ -15,60 +15,8 @@
     sources = import ./sources.nix {};
     buildQuartus = import ./package.nix;
 
-    legacySources = with pkgs; import ./legacySources.nix { inherit fetchurl requireFile; };
-    buildLegacyQuartus = import ./legacyPackage.nix { inherit pkgs; };
-
-    mkLegacyQuartus = legacySource: buildLegacyQuartus {
-      inherit (legacySource) baseName prettyName;
-      version = legacySource.version;
-      components = with legacySource.components; [
-        quartus # TODO: expose component selection to flake
-      ];
-      #updateComponents = with legacySource.updates.components; [
-      #  quartus
-      #];
-    };
-
-
   in {
     packages = rec {
-
-      quartus-ii-subscription-13 =
-        mkLegacyQuartus legacySources.v13.subscription_edition;
-
-      quartus-ii-web-14 =
-        mkLegacyQuartus legacySources.v14.web_edition;
-
-      quartus-ii-subscription-14 =
-        mkLegacyQuartus legacySources.v14.subscription_edition;
-
-      quartus-prime-lite-15 =
-        mkLegacyQuartus legacySources.v15.lite;
-
-      quartus-prime-standard-15 =
-        mkLegacyQuartus legacySources.v15.standard;
-
-      quartus-prime-lite-16 =
-        mkLegacyQuartus legacySources.v16.lite;
-
-      quartus-prime-standard-16 =
-        mkLegacyQuartus legacySources.v16.standard;
-
-      quartus-prime-lite-17 =
-        mkLegacyQuartus legacySources.v17.lite;
-
-      quartus-prime-standard-17 =
-        mkLegacyQuartus legacySources.v17.standard;
-
-      quartus-prime-lite-18 =
-        mkLegacyQuartus legacySources.v18.lite;
-
-      quartus-prime-standard-18 =
-        mkLegacyQuartus legacySources.v18.standard;
-
-      # mkLegacyQuartus crashes from v19 onwards with:
-      #   Error changing permissions to 042750 in /nix/store/w49zcrkmcx8lyclbwsxkz0y45y7ys8ka-altera-quartus-prime-lite-unwrapped-19.1.0.670/ip/altera/mentor_vip_ae/axi3
-      
       mkQuartus = conf: buildQuartus rec {
         inherit pkgs;
         source = sources."v${builtins.toString conf.version}".${conf.edition};
@@ -78,26 +26,23 @@
       
       # Aliases to latest versions
       quartus-prime-lite = conf: mkQuartus ({
-          version = conf.version or 23;
-          edition = "lite";
-        } 
-        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
-        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
-      );
+        version = conf.version or 23;
+        edition = "lite";
+        installs = conf.installs or {};
+        devices = conf.devices or {};
+      });
       quartus-prime-standard = conf: mkQuartus ({
-          version = conf.version or 23;
-          edition = "standard";
-        } 
-        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
-        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
-      );
+        version = conf.version or 23;
+        edition = "standard";
+        installs = conf.installs or {};
+        devices = conf.devices or {};
+      });
       quartus-prime-pro = conf: mkQuartus ({
-          version = conf.version or 24;
-          edition = "pro";
-        } 
-        // (if builtins.hasAttr "installs" conf then {installs = conf.installs;} else {})
-        // (if builtins.hasAttr "devices" conf then {devices = conf.devices;} else {})
-      );
+        version = conf.version or 24;
+        edition = "pro";
+        installs = conf.installs or {};
+        devices = conf.devices or {};
+      });
     };
   });
 }
