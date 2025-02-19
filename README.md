@@ -27,11 +27,13 @@ example, to install the Lite Edition of Quartus Prime 23 with support for Cyclon
 ```nix
 environment.systemPackages = [
     # ...
-    (inputs.quartus.packages.${pkgs.system}.mkQuartus {
+    (inputs.quartus.packages.${pkgs.system}.mkVersion {
         edition = "lite";
         version = 23;
-        installs = [ "QuestaSetup" ];
-        devices = [ "cyclonev" ];
+        extraArgs = {
+            installs = [ "QuestaSetup" ];
+            devices = [ "cyclonev" ];
+        };
     })
     # ...
 ];

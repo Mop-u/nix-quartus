@@ -11,6 +11,13 @@ let
             extraArgs = args;
         };
 
+    mkStd = { version ? 23, ... } @ args:
+        mkVersion {
+            inherit version;
+            edition = "standard";
+            extraArgs = args;
+        };
+
     mkPro = { version ? 24, ... } @ args:
         mkVersion {
             inherit version;
@@ -20,5 +27,6 @@ let
 in
     {
         quartus-prime-lite = mkLite {};
+        quartus-prime-std = mkStd {};
         quartus-prime-pro  = mkPro  {};
     }

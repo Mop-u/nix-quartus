@@ -40,9 +40,11 @@
             };
 
             packages.${system} = {
+                inherit mkVersion;
                 inherit (all-quartuses)
                     quartus-prime-lite
-                    quartus-pro-pro;
+                    quartus-prime-std
+                    quartus-prime-pro;
             };
         };
 }
