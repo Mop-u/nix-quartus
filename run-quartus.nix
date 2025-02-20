@@ -15,7 +15,7 @@ let
         fi
 
         if [ "$1" = "std" ]; then
-            ${nix}/bin/nix shell .#quartus-prime-std --command "quartus"
+            ${nix}/bin/nix shell .#quartus-prime-standard --command "quartus"
         fi
 
         if [ "$1" = "lite" ]; then

@@ -27,6 +27,6 @@ let
 in
     {
         quartus-prime-lite = mkLite {};
-        quartus-prime-std = mkStd {};
+        quartus-prime-standard = mkStd {};
         quartus-prime-pro  = mkPro  {};
     }
