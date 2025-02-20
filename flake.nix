@@ -40,6 +40,8 @@
         };
     in
         {
+            nixosModules.quartus = import ./module.nix {inherit mkVersion;};
+
             apps.${system}.default = {
                 type = "app";
                 program = "${run-quartus}/bin/${run-quartus.pname or run-quartus.name}";
