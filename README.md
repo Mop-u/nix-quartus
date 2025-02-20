@@ -38,3 +38,24 @@ environment.systemPackages = [
     # ...
 ];
 ```
+
+Alternatively you can add the module to your flake to allow having multiple editions of quartus installed side-by-side:
+
+```nix
+modules = [ inputs.quartus.nixosModules.quartus ];
+```
+
+```nix
+programs.quartus = {
+    enable = true;
+    lite = {
+        enable = true;
+        installs = [ "QuestaSetup" ];
+        devices = [ "cyclonev" ];
+    };
+    pro = {
+        enable = true;
+        devices = [ "cyclone10gx" ];
+    };
+};
+```
