@@ -22,31 +22,14 @@
             inherit mkQuartusUnwrapped;
         };
 
-        mkVersion = import ./make-version.nix {
-            inherit pkgs mkQuartus;
-            quartus-sources = sources;
-        };
+        mkVersion = { version, edition, extraArgs }: let
+            source = sources."v${builtins.toString version}".${edition};
+        in mkQuartus { inherit source extraArgs; };
+        
+    in {
 
-        all-quartuses = import ./all-versions.nix {
-            inherit pkgs mkVersion;
-        };
+        nixosModules.quartus = import ./module.nix {inherit mkVersion;};
 
-        run-quartus = pkgs.callPackage ./run-quartus.nix {};
-    in
-        {
-            nixosModules.quartus = import ./module.nix {inherit mkVersion;};
-
-            apps.${system}.default = {
-                type = "app";
-                program = "${run-quartus}/bin/${run-quartus.pname or run-quartus.name}";
-            };
-
-            packages.${system} = {
-                inherit mkVersion;
-                inherit (all-quartuses)
-                    quartus-prime-lite
-                    quartus-prime-standard
-                    quartus-prime-pro;
-            };
-        };
+        packages.${system} = {inherit mkVersion;};
+    };
 }
