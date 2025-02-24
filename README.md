@@ -59,3 +59,4 @@ programs.quartus = {
     };
 };
 ```
+Then launch the appropriate edition of quartus via terminal `quartus-lite` / `quartus-standard` / `quartus-pro`
