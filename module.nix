@@ -67,31 +67,17 @@ in {
             installPhase = ''
                 mkdir -p $out/bin
                 ${builtins.concatStringsSep "\n" (builtins.map (x: "cp -r ${x}/* $out/") (
-                    (optional cfg.lite.enable (pkgs.writeShellScriptBin "quartus-lite" ''
-                        ${pkgs.nix}/bin/nix shell "${mkVersion {
-                            edition = "lite";
-                            version = cfg.lite.version;
-                            extraArgs.devices = cfg.lite.devices;
-                            extraArgs.installs = cfg.lite.installs;
-                        }}" --command "quartus"
-                    '')) ++
-                    (optional cfg.standard.enable (pkgs.writeShellScriptBin "quartus-standard" ''
-                        ${pkgs.nix}/bin/nix shell "${mkVersion {
-                            edition = "standard";
-                            version = cfg.standard.version;
-                            extraArgs.devices = cfg.standard.devices;
-                            extraArgs.installs = cfg.standard.installs;
-                        }}" --command "quartus"
-                    '')) ++
-                    (optional cfg.pro.enable (pkgs.writeShellScriptBin "quartus-pro" ''
-                        ${pkgs.nix}/bin/nix shell "${mkVersion {
-                            edition = "pro";
-                            version = cfg.pro.version;
-                            extraArgs.devices = cfg.pro.devices;
-                            extraArgs.installs = cfg.pro.installs;
-                        }}" --command "quartus"
-                    ''))
-                ))}
+                    builtins.concatMap (
+                        edition: optional cfg.${edition}.enable (pkgs.writeShellScriptBin "quartus-${edition}" ''
+                            ${pkgs.nix}/bin/nix shell "${mkVersion {
+                                inherit edition;
+                                version = cfg.${edition}.version;
+                                extraArgs.devices = cfg.${edition}.devices;
+                                extraArgs.installs = cfg.${edition}.installs;
+                            }}" --command "quartus"
+                        ''
+                    )) ["lite" "standard" "pro"])
+                )}
             '';
         })];
     };
