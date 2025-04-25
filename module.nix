@@ -45,7 +45,7 @@ in {
             version = mkOption {
                 description = "Major version number";
                 type = with types; int;
-                default = 24;
+                default = 25;
             };
             devices = mkOption {
                 description = "Device support (see sources.nix devices)";
