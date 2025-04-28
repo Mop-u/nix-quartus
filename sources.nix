@@ -247,7 +247,30 @@
             };
         };
     };
-    v24 = {
+    v24 = rec {
+        version = "24.1std.0.1077";
+        baseUrl = "https://downloads.intel.com/akdlm/software/acdsinst/24.1std/1077/ib_installers";
+
+        lite = {
+            variant = "lite";
+            inherit version baseUrl;
+            quartusInstaller = "QuartusLiteSetup";
+            defaultInstalls = [ ];
+            defaultDevices = [ "cyclonev" ];
+            installers = {
+                QuartusLiteSetup = "sha256-NFWT1VWcb3gun7GhpPbHzR3SIYBMpK40jESXS/vC5II=";
+                QuestaSetup = "sha256-4+Y34UiJwenlIp/XKzMs+2aYZt/Y6XmNmiYyXVmOQkc=";
+            };
+            devices = {
+                arria_lite = "sha256-ASvi9YX15b4XXabGjkuR5wl9wDwCijl8s750XTR/4XU=";
+                cyclone = "sha256-iNA4S5mssffgn29NUhibJk6iKnmJ+vG9LYY3W+nnqcI=";
+                cyclone10lp = "sha256-247yR2fm5A3LWRjePJU99z1NBYziV8WkPL05wHJ4Z1Q=";
+                cyclonev = "sha256-Fa1PQ3pp9iTPYQljeKGyxHIXHaSolJZR8vXVb3gEN7g=";
+                max = "sha256-lAA1CgSfAjfilLDhRzfU2OkzGAChk7TMFckeboMB4mI=";
+                max10 = "sha256-edycBj0P3qwLN2YS//QpCHQeGOW8WM0RqTIWdGAkEv8=";
+            };
+        };
+
         pro = {
             variant = "pro";
             version = "24.3.0.212";
