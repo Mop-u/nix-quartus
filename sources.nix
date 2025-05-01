@@ -259,6 +259,7 @@
             defaultDevices = [ "cyclonev" ];
             installers = {
                 QuartusLiteSetup = "sha256-NFWT1VWcb3gun7GhpPbHzR3SIYBMpK40jESXS/vC5II=";
+                QuartusProgrammerSetup = "sha256-y29+AlNQoauh11EVNfUxkCq58in4lqg5ufH810RtuW0=";
                 QuestaSetup = "sha256-4+Y34UiJwenlIp/XKzMs+2aYZt/Y6XmNmiYyXVmOQkc=";
             };
             devices = {
@@ -321,6 +322,7 @@
 
             installers = {
                 QuartusProSetup = "sha256-XXyzRpOyAAi444VcvMlz+tOFo84xN4D/PMBnZtEocII=";
+                QuartusProProgrammerSetup = "sha256-7cmeKabiNOCaYQGVfpupsEgXNbdfh+F8vxl2yUer1Eo=";
                 QuestaSetup = "sha256-jMsVHOjm/3gDaYeODVmxHw4Mvzd0vZIs9aXVyufgbq8=";
             };
 
