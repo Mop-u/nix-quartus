@@ -44,6 +44,7 @@ let
         xorg.libSM
         xorg.libXau
         xorg.libXdmcp
+        xorg.libXScrnSaver
         libudev0-shim
         bzip2
         brotli
@@ -60,25 +61,28 @@ let
       multiArch = withQuesta;
 
       # these libs are installed as 64 bit, plus as 32 bit when multiArch is true
-      multiPkgs = pkgs: with pkgs; let
-        # This seems ugly - can we override `libpng = libpng12` for all `pkgs`?
-        freetype = pkgs.freetype.override { libpng = libpng12; };
-        fontconfig = pkgs.fontconfig.override { inherit freetype; };
-        libXft = pkgs.xorg.libXft.override { inherit freetype fontconfig; };
-      in [
-        # questa requirements
-        libxml2
-        ncurses5
-        unixODBC
-        libXft
-        # common requirements
-        freetype
-        fontconfig
-        xorg.libX11
-        xorg.libXext
-        xorg.libXrender
-        libxcrypt-legacy
-      ];
+      multiPkgs =
+        pkgs:
+        with pkgs;
+        let
+          # This seems ugly - can we override `libpng = libpng12` for all `pkgs`?
+          freetype = pkgs.freetype.override { libpng = libpng12; };
+          fontconfig = pkgs.fontconfig.override { inherit freetype; };
+          libXft = pkgs.xorg.libXft.override { inherit freetype fontconfig; };
+        in [
+          # questa requirements
+          libxml2
+          ncurses5
+          unixODBC
+          libXft
+          # common requirements
+          freetype
+          fontconfig
+          xorg.libX11
+          xorg.libXext
+          xorg.libXrender
+          libxcrypt-legacy
+        ];
 
       extraInstallCommands = ''
         mkdir -p $out/share/applications $out/share/icons/hicolor/64x64/apps

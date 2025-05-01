@@ -7,6 +7,8 @@
 let
   mkQuartus = { source, extraArgs }:
     let
+      inherit (source) version;
+
       installs = extraArgs.installs or source.defaultInstalls;
       devices  = extraArgs.devices or source.defaultDevices;
 
@@ -34,8 +36,6 @@ let
       componentTree = lib.mapAttrs (n: v: 
         (if (lib.isString v) then { ${n} = v; } else v)
       ) source.devices;
-
-      version = source.version;
 
       download = {name, hash}: fetchurl {
         inherit name hash;
@@ -99,10 +99,10 @@ let
           rm -r $out/uninstall $out/logs
 
           # replace /proc pentium check with a true statement. this allows usage under emulation.
-          ${if (source.variant!="pro") then ''
+          ${lib.optionalString (source.variant!="pro") ''
             substituteInPlace $out/quartus/adm/qenv.sh \
               --replace-fail 'grep sse /proc/cpuinfo > /dev/null 2>&1' ':'
-          '' else ""}
+          ''}
         '';
 
       meta = {
