@@ -17,13 +17,28 @@
         "type": "indirect"
       }
     },
+    "moppkgs": {
+      "locked": {
+        "lastModified": 1771269470,
+        "narHash": "sha256-Tv9Y1rVLc877qqVXGaGtBMTMi1LIYvh1WIhqagRBxtM=",
+        "owner": "Mop-u",
+        "repo": "moppkgs",
+        "rev": "5ef07949ce01e55ddac43d9381ca03d1b7887f2a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mop-u",
+        "repo": "moppkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1731139594,
-        "narHash": "sha256-IigrKK3vYRpUu+HEjPL/phrfh7Ox881er1UEsZvw9Q4=",
+        "lastModified": 1771008912,
+        "narHash": "sha256-gf2AmWVTs8lEq7z/3ZAsgnZDhWIckkb+ZnAo5RzSxJg=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "76612b17c0ce71689921ca12d9ffdc9c23ce40b2",
+        "rev": "a82ccc39b39b621151d6732718e3e250109076fa",
         "type": "github"
       },
       "original": {
@@ -36,6 +51,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
+        "moppkgs": "moppkgs",
         "nixpkgs": "nixpkgs"
       }
     },
