@@ -20,7 +20,7 @@
                     inherit system;
                     config.allowUnfree = true;
                 }).extend
-                    moppkgs.overlays.quartus-prime-pro;
+                    moppkgs.overlays.quartus;
 
             mkVersion =
                 {
