@@ -50,7 +50,6 @@
 
         in
         {
-
             nixosModules.quartus = import ./module.nix { inherit mkVersion; };
 
             packages.${system} = { inherit mkVersion; };
